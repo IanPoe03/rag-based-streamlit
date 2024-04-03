@@ -11,10 +11,8 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-import zipfile
-import tempfile
-from langchain_community.vectorstores import Chroma
-import os
+from langchain_community.vectorstores import FAISS
+
 
 
 #Main part of the page - it displays the starting screen and chat interface
@@ -39,7 +37,7 @@ with st.sidebar:
         chunker = CharacterTextSplitter(chunk_size = 512, chunk_overlap = 128)
         contents = chunker.split_text(file_contents)   
         embeddings = OpenAIEmbeddings(openai_api_key = OPENAI_API_KEY)
-        vector_space = Chroma.from_texts(contents, embeddings)
+        vector_space = FAISS.from_texts(contents, embeddings)
         st.write("Chunked and Embedded") 
 
 #set up chat interface - conversation between an assistant and a user
