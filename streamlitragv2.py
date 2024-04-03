@@ -90,7 +90,7 @@ if prompt := st.chat_input():
         )
 
     #currently using gpt-3.5-turbo as the llm
-    llm_model = ChatOpenAI(temperature=0.7, model_name = "gpt-3.5-turbo", verbose =False)
+    llm_model = ChatOpenAI(temperature=0.7, model_name = "gpt-3.5-turbo", verbose =False, openai_api_key = OPENAI_API_KEY)
 
     #use embeddings from uploaded document as a retriever with 3-Neighbor KNN
     retriever = vector_space.as_retriever(search_type = "similarity", search_kwargs={"k": 3})
