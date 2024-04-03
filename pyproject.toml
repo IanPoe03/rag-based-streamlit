@@ -1,0 +1,19 @@
+[project]
+name = "rag-based-streamlit"
+version = "0.1.0"
+description = "A simple RAG-Based streamlit app"
+readme = "README.md"
+authors = [
+    {name = "Ian Poe", email = "ianpoe03@gmail.com"},
+]
+license = "MIT"
+repository = "https://github.com/ianpoe03/rag-based-streamlit"
+python-versions = "3.12.2"
+
+[project.dependencies]
+langchain = "0.1.14"
+langchain_community = "0.0.31"
+langchain_openai = "0.1.1"
+langchain_text_splitters = "0.0.1"
+openai = "1.16.1"
+streamlit = "1.32.2"
