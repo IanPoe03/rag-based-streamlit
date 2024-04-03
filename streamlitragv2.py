@@ -38,7 +38,7 @@ with st.sidebar:
         #chunks are length 512, overlap 128 - this performs well so far
         chunker = CharacterTextSplitter(chunk_size = 512, chunk_overlap = 128)
         contents = chunker.split_text(file_contents)   
-        embeddings = OpenAIEmbeddings(OPENAI_API_KEY = OPENAI_API_KEY)
+        embeddings = OpenAIEmbeddings(openai_api_key = OPENAI_API_KEY)
         vector_space = Chroma.from_texts(contents, embeddings)
         st.write("Chunked and Embedded") 
 
