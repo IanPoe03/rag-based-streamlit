@@ -17,3 +17,4 @@ langchain_openai = "0.1.1"
 langchain_text_splitters = "0.0.1"
 openai = "1.16.1"
 streamlit = "1.32.2"
+sqlite == 3.45.2
