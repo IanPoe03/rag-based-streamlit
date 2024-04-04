@@ -23,7 +23,7 @@ with st.sidebar:
 #If user enters an API key, load persistent directory and set up vector space from it
 if OPENAI_API_KEY:
     persist_dir = 'https://raw.githubusercontent.com/IanPoe03/rag-based-streamlit/tree/main/persistent_directory'
-    embeddings =  OpenAIEmbeddings()
+    embeddings =  OpenAIEmbeddings(openai_api_key = OPENAI_API_KEY)
     vector_space = Chroma(persist_directory=persist_dir, embedding_function=embeddings)
 
 #set up chat interface - conversation between an assistant and a user
@@ -70,7 +70,7 @@ if prompt := st.chat_input():
         )
 
     #currently using gpt-3.5-turbo as the llm
-    llm_model = ChatOpenAI(temperature=0.7, model_name = "gpt-3.5-turbo", verbose =False)
+    llm_model = ChatOpenAI(temperature=0.7, model_name = "gpt-3.5-turbo", verbose =False, openai_api_key = OPENAI_API_KEY)
 
     #use embeddings from uploaded document as a retriever with 3-Neighbor KNN
     retriever = vector_space.as_retriever(search_type = "similarity", search_kwargs={"k": 3})
