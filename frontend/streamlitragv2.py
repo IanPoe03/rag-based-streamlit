@@ -22,7 +22,7 @@ with st.sidebar:
 
 #If user enters an API key, load persistent directory and set up vector space from it
 if OPENAI_API_KEY:
-    persist_dir = 'rag-based-streamlit/tree/main/persistent_directory'
+    persist_dir = 'persistent_directory'
     embeddings =  OpenAIEmbeddings(openai_api_key = OPENAI_API_KEY)
     vector_space = Chroma(persist_directory=persist_dir, embedding_function=embeddings)
 
