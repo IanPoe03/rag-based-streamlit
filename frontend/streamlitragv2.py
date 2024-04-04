@@ -1,24 +1,17 @@
-#streamlitragv2 - currently, it allows user to upload a file and then answers questions based on embeddings of this file
-
+#streamlit rag v3 - accesses a persistent database of transcripts
 
 import streamlit as st
-from langchain_text_splitters import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
-from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-from langchain_community.vectorstores import FAISS
-
-
+from langchain_community.vectorstores import Chroma
 
 #Main part of the page - it displays the starting screen and chat interface
-st.title('RAG-Based Virtual Chatbot')
-st.caption('Hi! I can answer questions based on documents provided to me :)')
-
+st.title('RAG-Based Chatbot for AI in Marketing')
+st.caption('Hi! I can answer questions about the AI in Marketing course. To get started, enter your API key in the sidebar')
 
 #Sidebar widget for API key entry
 with st.sidebar:
@@ -27,18 +20,11 @@ with st.sidebar:
     if OPENAI_API_KEY:
         st.write("Successfully Applied OpenAI API Key")
 
-# #Sidebar widet for uploading documents - currently only accepts .txt
-with st.sidebar:
-    uploaded_file = st.file_uploader("Upload a .txt file to my knowledge", type='txt')
-    if uploaded_file is not None:
-        file_contents = uploaded_file.getvalue().decode("utf-8")
-        st.write(f"Processing file ...")
-        #chunks are length 512, overlap 128 - this performs well so far
-        chunker = CharacterTextSplitter(chunk_size = 512, chunk_overlap = 128)
-        contents = chunker.split_text(file_contents)   
-        embeddings = OpenAIEmbeddings(openai_api_key = OPENAI_API_KEY)
-        vector_space = FAISS.from_texts(contents, embeddings)
-        st.write("Chunked and Embedded") 
+#If user enters an API key, load persistent directory and set up vector space from it
+if OPENAI_API_KEY:
+    persist_dir = '/Users/ianpoe/Desktop/ISOM352/AI in Education/STREAMLIT2/transcripts'
+    embeddings =  OpenAIEmbeddings()
+    vector_space = Chroma(persist_directory=persist_dir, embedding_function=embeddings)
 
 #set up chat interface - conversation between an assistant and a user
 if "messages" not in st.session_state:
@@ -48,18 +34,12 @@ if "messages" not in st.session_state:
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
-
 #main part of the program - it runs in the middle section
 if prompt := st.chat_input():
 
     #check for API Key
     if not OPENAI_API_KEY:
         st.info("Please add your OpenAI API key to continue.")
-        st.stop()
-    
-    #check that uploaded file has been embedded
-    if not (vector_space):
-        st.info("Please upload a file to continue.")
         st.stop()
 
     #template for assistant = can be customized based on class needs
@@ -90,7 +70,7 @@ if prompt := st.chat_input():
         )
 
     #currently using gpt-3.5-turbo as the llm
-    llm_model = ChatOpenAI(temperature=0.7, model_name = "gpt-3.5-turbo", verbose =False, openai_api_key = OPENAI_API_KEY)
+    llm_model = ChatOpenAI(temperature=0.7, model_name = "gpt-3.5-turbo", verbose =False)
 
     #use embeddings from uploaded document as a retriever with 3-Neighbor KNN
     retriever = vector_space.as_retriever(search_type = "similarity", search_kwargs={"k": 3})
